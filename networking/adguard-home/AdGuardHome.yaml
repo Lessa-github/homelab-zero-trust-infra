@@ -1,0 +1,18 @@
+# Configuração Otimizada do AdGuard Home (Cache 0.2ms)
+dns:
+  bind_hosts:
+    - 0.0.0.0
+  port: 53
+  upstream_dns:
+    - https://dns.cloudflare.com/dns-query
+    - https://dns.quad9.net/dns-query
+  upstream_mode: fastest_addr
+  fastest_timeout: 1s
+  bootstrap_dns:
+    - 1.1.1.1
+    - 9.9.9.9
+  cache_size: 4194304
+  cache_ttl_min: 3600
+  cache_ttl_max: 86400
+  cache_optimistic: true
+  blocking_mode: default
