@@ -30,7 +30,7 @@ timeline
     title Engineering Journey: From College Theory to Production SRE (2025 - 2026)
     2025 (Academic Studies) : Linux & Network Fundamentals : Sizing & TDP Calculations : Cisco Packet Tracer Topologies : Subnet Matrix (172.28.40.0/24)
     Jan - Jul 2026 (Final Academic Stretch) : Zero-Trust Threat Modeling : WireGuard & Linux Namespaces : Air-Gapped DFIR Bridge Planning : Final Hardware Sizing
-    August 2026 (Classes Concluded) : College Graduation : Physical Hardware Arrival : Proxmox VE 8 Setup : Multi-Bridge Networking (vmbr0/1)
+    August 2026 (Classes Concluded) : Completed College Classes : Physical Hardware Arrival : Proxmox VE 8 Setup : Multi-Bridge Networking (vmbr0/1)
     September 2026 (Full Hands-on Deployment) : NetBird Mesh (0 WAN Ports) : AdGuard DNS (0.2ms Cache) : NPM Wildcard SSL : Portainer -> Komodo GitOps
     October 2026 (DFIR & Sovereign AI) : Velociraptor at 67 MB RAM : Atomic Red Team (344 Tests) : OmniRoute AI Gateway : Ephemeral Zero-Knowledge Secrets
 ```

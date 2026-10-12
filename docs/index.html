@@ -27,33 +27,53 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
     }
     .sidebar {
-      background-color: #070a12 !important;
+      background-color: #060911 !important;
       border-right: 1px solid #1e293b !important;
+      width: 290px !important;
+    }
+    .sidebar-nav {
+      padding: 10px 0 30px 15px !important;
     }
     .sidebar-nav a {
       color: #94a3b8 !important;
-      font-size: 0.95rem;
-      transition: color 0.2s ease;
+      font-size: 0.92rem !important;
+      transition: all 0.2s ease !important;
+      border-left: 2px solid transparent !important;
+      padding-left: 8px !important;
+      display: inline-block !important;
     }
     .sidebar-nav a:hover {
       color: #38bdf8 !important;
+      border-left-color: #38bdf8 !important;
+      padding-left: 12px !important;
     }
     .sidebar-nav li.active > a {
-      color: #06b6d4 !important;
-      font-weight: 600;
+      color: #00f0ff !important;
+      font-weight: 600 !important;
+      border-left-color: #00f0ff !important;
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.3) !important;
     }
     .app-name-link {
       font-weight: 700;
       color: #38bdf8 !important;
       font-size: 1.1rem;
     }
+    .content {
+      padding-top: 15px !important;
+    }
+    .markdown-section {
+      max-width: 980px !important;
+      padding: 30px 45px 60px 45px !important;
+    }
     code, pre {
       font-family: 'JetBrains Mono', monospace !important;
     }
     pre {
-      background-color: #0f172a !important;
+      background-color: #070a13 !important;
       border: 1px solid #1e293b !important;
+      border-left: 3px solid #00f0ff !important;
       border-radius: 8px !important;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
     }
     .markdown-section blockquote {
       border-left: 4px solid #06b6d4;
@@ -62,33 +82,107 @@
       border-radius: 0 8px 8px 0;
       padding: 12px 20px;
     }
-    .markdown-section h1 { color: #38bdf8; }
+    .markdown-section h1 { 
+      color: #38bdf8; 
+      letter-spacing: -0.02em !important;
+      border-bottom: 2px solid #1e293b !important;
+      padding-bottom: 12px !important;
+    }
     .markdown-section h2 { 
-      color: #06b6d4; 
+      color: #00f0ff; 
       border-bottom: 1px solid #1e293b; 
       padding-bottom: 8px; 
-      margin-top: 2.5rem;
+      margin-top: 3rem;
     }
-    .markdown-section h3 { color: #10b981; margin-top: 1.5rem; }
+    .markdown-section h3 { color: #10b981; margin-top: 2rem; }
+    
+    /* High-Contrast Dark Hacker Table */
     .markdown-section table {
-      border-collapse: collapse;
-      width: 100%;
-      margin: 20px 0;
+      display: table !important;
+      width: 100% !important;
+      border-collapse: collapse !important;
+      margin: 24px 0 !important;
+      background-color: #090d16 !important;
+      border: 1px solid #1e293b !important;
+      border-radius: 8px !important;
+      overflow: hidden !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
     }
-    .markdown-section th {
-      background-color: #1e293b;
-      color: #38bdf8;
-      border: 1px solid #334155;
-      padding: 10px;
+    .markdown-section table tr {
+      background-color: #0b0f19 !important;
+      border-top: 1px solid #1e293b !important;
+      border-bottom: 1px solid #1e293b !important;
+      transition: background-color 0.15s ease !important;
     }
-    .markdown-section td {
-      border: 1px solid #1e293b;
-      padding: 10px;
+    .markdown-section table tr:nth-child(2n) {
+      background-color: #111827 !important;
+    }
+    .markdown-section table tr:hover {
+      background-color: #1e293b !important;
+    }
+    .markdown-section table th {
+      background-color: #0f172a !important;
+      color: #38bdf8 !important;
+      font-weight: 700 !important;
+      font-size: 0.88rem !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.05em !important;
+      border: 1px solid #334155 !important;
+      padding: 12px 16px !important;
+      text-align: left !important;
+    }
+    .markdown-section table td {
+      color: #f1f5f9 !important;
+      border: 1px solid #1e293b !important;
+      padding: 11px 16px !important;
+      font-size: 0.92rem !important;
+    }
+    .markdown-section table td code {
+      background-color: #1e293b !important;
+      color: #38bdf8 !important;
+      padding: 2px 6px !important;
+      border-radius: 4px !important;
+      font-size: 0.85rem !important;
+    }
+
+    /* Centered Mermaid Diagrams & Dark Hacker Container */
+    .mermaid {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      margin: 2.5rem auto !important;
+      padding: 1.5rem !important;
+      background-color: #070a13 !important;
+      border: 1px solid #1e293b !important;
+      border-radius: 10px !important;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5) !important;
+      overflow-x: auto !important;
+      text-align: center !important;
+    }
+    .mermaid svg {
+      max-width: 100% !important;
+      height: auto !important;
+      margin: 0 auto !important;
+      display: block !important;
     }
   </style>
   <script src="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
   <script>
-    mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#070a13',
+        primaryColor: '#1e293b',
+        primaryTextColor: '#f8fafc',
+        primaryBorderColor: '#38bdf8',
+        lineColor: '#38bdf8',
+        secondaryColor: '#0f172a',
+        tertiaryColor: '#111827',
+        fontFamily: 'Inter, sans-serif'
+      }
+    });
   </script>
 </head>
 <body>

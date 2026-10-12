@@ -15,7 +15,7 @@ Designed to operate **24/7 with high service density (12 persistent LXCs running
 
 * **January/2025 to August/2026 (College Coursework & Theoretical Foundation):**
   Network architecture studies, hardware capacity planning (TDP targets of 15W to 35W, RAM allocation matrix), and topology simulations in Cisco Packet Tracer with documented corporate subnets (`172.28.40.0/24`). Established the strict architectural rule banning residential WAN port-forwarding.
-* **August/2026 (Graduation & Hardware Deployment):**
+* **August/2026 (Completed College Classes & Hardware Deployment):**
   Classes concluded; physical host assembly and Proxmox VE 8 initialization, NVMe ZFS storage partitioning, and Linux multi-bridge configuration (`vmbr0` and `vmbr1`).
 * **September/2026 to October/2026 (Full Hands-on & Production Hardening):**
   NetBird WireGuard mesh deployment, AdGuard Home DNS with optimistic caching (0.2ms latency), Nginx Proxy Manager wildcard SSL via DNS Challenge, Authentik SSO with FIDO2 / WebAuthn passkeys, and declarative container GitOps migration with Komodo Orchestrator.
