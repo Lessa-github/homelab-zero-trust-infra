@@ -5,91 +5,79 @@
 [![Architecture](https://img.shields.io/badge/Security-Zero--Trust_Mesh-10b981?style=for-the-badge&logo=wireguard&logoColor=white)](https://netbird.io)
 [![Status](https://img.shields.io/badge/Production-24%2F7_Active-blue?style=for-the-badge)](https://lessa-github.github.io/gabriel-portfolio/)
 
-Repositório oficial documentando a arquitetura de produção, automação, observabilidade e hardening do meu **Homelab Zero-Trust** construído sobre **Proxmox Virtual Environment (PVE)**.
+Official repository documenting the production engineering, network architecture, automated orchestration, and SRE hardening of my **Zero-Trust Homelab Infrastructure** running on **Proxmox Virtual Environment (PVE)**.
 
-Projetado para operar **24/7 com alta densidade de serviços (12 LXCs ativos simultaneamente em apenas 32 GB de RAM), consumo elétrico inferior a 25W e ZERO portas abertas na WAN**.
-
----
-
-## 🧭 Linha do Tempo de Engenharia (2025 - Presente)
-
-* **Janeiro/2025 a Agosto/2026 (Fase Escolar & Fundação Teórica):**
-  Estudos de arquitetura de redes, dimensionamento de hardware (cálculos de TDP de 15W a 35W), matriz de densidade de memória e modelagem de topologia no Cisco Packet Tracer com sub-redes corporativas documentadas (`172.28.40.0/24`). Definição do princípio de banir port-forwarding na internet residencial.
-* **Agosto/2026 (Formatura & Chegada do Hardware):**
-  Fim das aulas no colégio; montagem e setup físico do host Proxmox VE 8, particionamento NVMe, bridges de rede `vmbr0` e `vmbr1`.
-* **Setembro/2026 a Outubro/2026 (Mão na Massa Acelerada & Produção):**
-  Implantação da malha NetBird WireGuard, AdGuard Home DNS com cache otimista (0.2ms), Nginx Proxy Manager com certificados Wildcard via DNS Challenge, autenticação Authentik SSO com Passkeys FIDO2 e migração para GitOps com Komodo Orchestrator.
+Designed to operate **24/7 with high service density (12 persistent LXCs running concurrently in only 32 GB of RAM), under 25W power draw, and ZERO open WAN ports**.
 
 ---
 
-## 📐 Topologia de Rede & Zonas de Confiança
+## 🧭 Engineering Timeline (2025 – Present)
+
+* **January/2025 to August/2026 (High School Research & Theoretical Foundation):**
+  Network architecture studies, hardware capacity planning (TDP targets of 15W to 35W, RAM allocation matrix), and topology simulations in Cisco Packet Tracer with documented corporate subnets (`172.28.40.0/24`). Established the strict architectural rule banning residential WAN port-forwarding.
+* **August/2026 (Graduation & Hardware Deployment):**
+  Classes concluded; physical host assembly and Proxmox VE 8 initialization, NVMe ZFS storage partitioning, and Linux multi-bridge configuration (`vmbr0` and `vmbr1`).
+* **September/2026 to October/2026 (Full Hands-on & Production Hardening):**
+  NetBird WireGuard mesh deployment, AdGuard Home DNS with optimistic caching (0.2ms latency), Nginx Proxy Manager wildcard SSL via DNS Challenge, Authentik SSO with FIDO2 / WebAuthn passkeys, and declarative container GitOps migration with Komodo Orchestrator.
+
+---
+
+## 📐 Zero-Trust Network Topology
 
 ```mermaid
 flowchart TD
-    subgraph WAN_EXT ["Perímetro Externo (0 Portas Abertas na Internet)"]
-        User["Dispositivo do Administrador (Laptop / Mobile)"]
+    subgraph EXTERNAL_WAN ["External Boundary (Zero Open WAN Ports)"]
+        AdminDevice["Administrator Laptop / Mobile Device<br>(WireGuard Peer: 10.240.50.2)"]
     end
 
-    subgraph NETBIRD_OVERLAY ["Malha WireGuard Criptografada (NetBird Mesh)"]
-        Tunnel["Túnel P2P Criptografado WireGuard (ChaCha20-Poly1305)"]
-        User -->|Handshake Peer-to-Peer| Tunnel
+    subgraph OVERLAY_MESH ["Encrypted WireGuard Mesh Overlay (NetBird)"]
+        Tunnel["P2P Encrypted Tunnel (ChaCha20-Poly1305)"]
+        AdminDevice <-->|Cryptographic Handshake| Tunnel
     end
 
-    subgraph PVE_HOST ["Proxmox VE Hypervisor Host (Host IP: 10.240.50.1 / vmbr0)"]
-        Tunnel --> HostKernel["Linux Kernel Routing & cgroups v2 Governor"]
+    subgraph HYPERVISOR_NODE ["Proxmox VE Hypervisor Host (Host IP: 10.240.50.1 / vmbr0)"]
+        Tunnel <--> HostKernel["Linux Kernel Routing & cgroups v2 Governor"]
     end
 
-    subgraph PROD_VLAN ["Zona de Produção Segura (172.28.40.0/24)"]
-        HostKernel --> NPM["Nginx Proxy Manager (:443 / :80)<br>IP: 172.28.40.103"]
+    subgraph PROD_VLAN ["Production Service Zone (172.28.40.0/24)"]
+        HostKernel --> NPM["Nginx Proxy Manager (:443)<br>IP: 172.28.40.103"]
         NPM -->|Forward-Auth| AUTH["Authentik SSO (WebAuthn / Passkeys)<br>IP: 172.28.40.111"]
-        NPM -->|DNS Queries| ADG["AdGuard Home DNS (Cache 0.2ms)<br>IP: 172.28.40.112"]
-        NPM -->|GitOps Engine| KOM["Komodo Orchestrator (Rust Agent)<br>IP: 172.28.40.109"]
-        NPM -->|Telemetria| KUMA["Uptime Kuma v2 + Dozzle<br>IP: 172.28.40.107"]
+        NPM -->|0.2ms DNS| ADG["AdGuard Home DNS (:53 DoH)<br>IP: 172.28.40.112"]
+        NPM -->|GitOps Engine| KOM["Komodo Orchestrator (:9120)<br>IP: 172.28.40.109"]
+        NPM -->|Telemetry| KUMA["Uptime Kuma v2 + Dozzle Logs<br>IP: 172.28.40.107"]
         NPM -->|AI Gateway| OMNI["OmniRoute AI Gateway (:20128)<br>IP: 172.28.40.114"]
     end
 
-    subgraph AIRGAP_SANDBOX ["Sandbox Isolada / Red Team (192.168.199.0/24 / vmbr1)"]
-        HostKernel -.->|Isolamento Air-Gapped| VELOC["Velociraptor DFIR (67MB RAM)<br>IP: 192.168.199.123"]
-        HostKernel -.->|Simulação| INET["INetSim Fake Internet<br>IP: 192.168.199.202"]
+    subgraph AIRGAPPED_VLAN ["Air-Gapped Sandbox Zone (192.168.199.0/24 / vmbr1)"]
+        HostKernel -.->|Isolated L2 Bridge| VELOC["Velociraptor DFIR (67 MB RAM)<br>IP: 192.168.199.123"]
+        HostKernel -.->|Fake Internet| INET["INetSim Simulation Daemon<br>IP: 192.168.199.202"]
     end
 ```
 
 ---
 
-## 📊 Matriz de Serviços em Produção (12 LXCs 24/7)
+## 📊 24/7 Production Services Matrix (12 LXCs)
 
-| CT ID | Hostname | IP Sintético | Função Principal | Footprint RAM | Stack Tecnológica |
-| :---: | :--- | :---: | :--- | :---: | :--- |
-| **103** | `nginx-proxy-manager` | `172.28.40.103` | Reverse Proxy TLS Wildcard + Forward-Auth | 180 MB | OpenResty, Nginx, Certbot |
-| **104** | `vaultwarden` | `172.28.40.104` | Cofre de Senhas Criptografado | 45 MB | Rust Server, SQLite, WebSockets |
-| **105** | `matrix-synapse` | `172.28.40.105` | Mensageria Federada E2EE + LiveKit WebRTC | 520 MB | Python Synapse, LiveKit Go |
-| **106** | `homepage-dashboard` | `172.28.40.106` | Dashboard Central com Telemetria PVE | 110 MB | Next.js SSR, API Integrations |
-| **107** | `uptime-kuma` | `172.28.40.107` | Monitoramento Contínuo (51 monitores) | 160 MB | Node.js, SQLite, Push Notifications |
-| **108** | `dozzle-logs` | `172.28.40.108` | Agregação de Logs Read-Only & Beszel Hub | 95 MB | Go Binary, Beszel Hardware Telemetry |
-| **109** | `komodo` | `172.28.40.109` | Orquestrador GitOps de Containers | 180 MB | Rust Core, Periphery Agent |
-| **111** | `authentik-sso` | `172.28.40.111` | Provedor de Identidade, WebAuthn & OIDC | 980 MB | Python, PostgreSQL 16, Redis |
-| **112** | `adguard-home` | `172.28.40.112` | DNS Resolver DoH (Cache de 0.2ms) | 48 MB | Go Static Binary, DoH Upstreams |
-| **113** | `simplelogin-alias` | `172.28.40.113` | Gerador de Aliases Anti-Spam e Privacidade | 310 MB | Flask, PostgreSQL, Postfix Engine |
-| **114** | `omniroute-ai` | `172.28.40.114` | Gateway de IA Multi-Provider & Compressão | 195 MB | TypeScript, Redis Cache |
-| **115** | `ai-workspace` | `172.28.40.115` | Agente Hermes, MCP & SearXNG Privado | 850 MB | Python 3.11, Debian 12 LXC |
-
----
-
-## 🔒 Princípios de Arquitetura & Hardening
-
-1. **Zero Port Forwarding:** Nenhuma porta é exposta no roteador residencial para a internet. Todo tráfego administrativo ingressa por túneis P2P WireGuard criptografados ponto a ponto (NetBird).
-2. **DNS Otimista com 0.2ms de Latência:** AdGuard Home configurado com `cache_optimistic: true`. Responde consultas de cache instantaneamente e revalida em background contra upstreams DoH seguros.
-3. **Autenticação Biométrica WebAuthn (Passkeys):** Eliminação de senhas estáticas. Acesso aos painéis administrativos requer chave criptográfica FIDO2 registrada no Authentik SSO.
-4. **GitOps Leve com Komodo:** Substituição de ferramentas pesadas de gerenciamento de containers por agentes em Rust consumindo menos de 20 MB por nó.
-5. **Kernel Tuning de SRE:** Calibragem de `sysctl.conf` no host Linux com mitigação de bufferbloat, reaproveitamento de sockets TCP (`tcp_tw_reuse`) e governança de memória via cgroups v2.
+| CT ID | Hostname | Documentation IP | RAM Allocation | Primary Role | Technology Stack |
+| :---: | :--- | :---: | :---: | :--- | :--- |
+| **103** | `nginx-proxy-manager` | `172.28.40.103` | 180 MB | Wildcard SSL Reverse Proxy & Forward-Auth | OpenResty, Certbot DNS-01 |
+| **104** | `vaultwarden` | `172.28.40.104` | 45 MB | Encrypted Password Vault | Rust Server, SQLite, WebSockets |
+| **105** | `matrix-synapse` | `172.28.40.105` | 520 MB | Federated E2EE Messaging & LiveKit WebRTC | Python Synapse, LiveKit Go |
+| **106** | `homepage-dashboard` | `172.28.40.106` | 110 MB | Real-time Hypervisor Telemetry Portal | Next.js SSR, Proxmox API |
+| **107** | `uptime-kuma` | `172.28.40.107` | 160 MB | Continuous Health Monitoring (51 Monitors) | Node.js, SQLite, Push Notifications |
+| **108** | `dozzle-logs` | `172.28.40.108` | 95 MB | Read-Only Streaming Logs & Beszel Hub | Go Binary, Beszel Telemetry |
+| **109** | `komodo` | `172.28.40.109` | 180 MB | Declarative GitOps Container Orchestration | Rust Core, Periphery Agent |
+| **111** | `authentik-sso` | `172.28.40.111` | 980 MB | Central Identity Provider, Passkeys & OIDC | Python, PostgreSQL 16, Redis |
+| **112** | `adguard-home` | `172.28.40.112` | 48 MB | Hardened DNS Resolver (0.2ms Cache) | Go Static Binary, DoH Upstreams |
+| **113** | `simplelogin-alias` | `172.28.40.113` | 310 MB | Anti-Spam Email Aliasing & Forwarding | Flask, PostgreSQL, Postfix Engine |
+| **114** | `omniroute-ai` | `172.28.40.114` | 195 MB | Multi-Provider AI API Gateway & Compression | TypeScript, Redis Cache |
+| **115** | `ai-workspace` | `172.28.40.115` | 850 MB | Hermes Autonomous Agent, MCP & SearXNG | Python 3.11, Debian 12 LXC |
 
 ---
 
-## 🛠️ CLI Controller: `labctl.sh`
+## 🛠️ Infrastructure CLI Controller: labctl.sh
 
-O repositório inclui o utilitário de administração com documentação integrada `--help`:
-
-```bash
+```text
 $ ./cli-tools/labctl.sh --help
 ===================================================================
   LABCTL - Zero-Trust Homelab Infrastructure CLI Controller v1.4
@@ -111,8 +99,8 @@ Options:
 
 ---
 
-## 🌐 Documentação Web Completa (Live Docsify)
+## 🌐 Live Technical Documentation
 
-Para explorar a documentação técnica com diagramas interativos, guias passo a passo e configurações declarativas, acesse o site oficial da documentação:
+Explore the complete single-page interactive whitepaper with smooth section scrolling:
 
 👉 **[https://lessa-github.github.io/homelab-zero-trust-infra/](https://lessa-github.github.io/homelab-zero-trust-infra/)**
