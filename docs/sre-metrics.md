@@ -1,43 +1,43 @@
-# 📈 SRE & Métricas de Telemetria
+# 📈 SRE & Telemetry Architecture
 
-Uma das maiores armadilhas em ambientes de Homelab é a criação de **loops de telemetria**: ferramentas de monitoramento pesadas que consomem mais CPU e RAM do que as próprias aplicações gerenciadas.
+One of the most frequent traps in homelab engineering is falling into **telemetry feedback loops**: deploying heavyweight monitoring tools that consume more CPU cycles and RAM than the production workloads they observe.
 
 ---
 
-## ⚡ A Arquitetura de Observabilidade Frugal
+## ⚡ The Frugal Observability Architecture
 
-Para monitorar mais de 12 serviços sem comprometer o hardware, estruturamos uma stack leve:
+To monitor 12+ production services without taxing hardware limits, we established a lightweight, resource-bounded stack:
 
 1. **Beszel Hub & Agent (CT 108):**
-   * Agente em Go compilado estaticamente consumindo **menos de 15 MB de RAM** por nó.
-   * Telemetria de CPU, uso de RAM, tráfego de interface de rede e integridade de disco NVMe (S.M.A.R.T.).
+   * Statically compiled Go agent consuming **under 15 MB of physical RAM** per monitored host.
+   * Collects CPU utilization, memory quotas, network interface throughput, and S.M.A.R.T. NVMe disk wear telemetry.
 2. **Dozzle Log Viewer (CT 108):**
-   * Visualizador de logs em streaming de alta performance em modo estritamente **read-only**.
-   * Não grava índices redundantes de banco de dados no disco; lê diretamente dos sockets de log do Docker/LXC.
+   * High-throughput log streaming daemon operating in strictly **read-only** mode.
+   * Stores zero redundant database indices to disk; streams directly from LXC and Docker log sockets.
 3. **Uptime Kuma v2 (CT 107):**
-   * 51 monitores ativos com verificações TCP, HTTP(s), DNS e certificados TLS.
-   * Notificações via webhooks autenticados.
+   * 51 continuous health probes executing TCP socket tests, HTTP(S) response status assertions, DNS resolution timings, and TLS certificate expiration monitoring.
+   * Alerts routed through authenticated webhooks.
 
 ---
 
-## ⚙️ Calibragem de Kernel Linux (`sysctl.conf`)
+## ⚙️ Linux Kernel Tuning & SRE Calibration (`sysctl.conf`)
 
-No host Proxmox VE, as seguintes diretrizes de SRE foram aplicadas:
+On the Proxmox VE host, the following kernel governance parameters were tuned to eliminate socket starvation and memory thrashing:
 
 ```ini
-# Mitigação de exaustão de descritores de sockets em alta densidade
+# Socket descriptor starvation prevention under high container concurrency
 net.core.somaxconn = 65535
 net.ipv4.tcp_max_syn_backlog = 8192
 
-# Otimização de reutilização de sockets TCP TIME_WAIT
+# TCP TIME_WAIT socket reuse optimization
 net.ipv4.tcp_tw_reuse = 1
 
-# Limites de governança de memória virtual (evita travamentos de swap)
+# Virtual memory governance quotas (eliminates swap thrashing)
 vm.swappiness = 10
 vm.dirty_ratio = 15
 vm.dirty_background_ratio = 5
 
-# Prevenção de loop de arp em interfaces bridge
+# ARP flux prevention across multi-bridge interfaces
 net.ipv4.conf.all.arp_ignore = 1
 net.ipv4.conf.all.arp_announce = 2
 ```

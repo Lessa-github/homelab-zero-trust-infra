@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # LABCTL - Zero-Trust Homelab Infrastructure CLI Controller v1.4
-# Desenvolvido por: Gabriel Santa Rosa Lessa
+# Developed by: Gabriel Santa Rosa Lessa
 # ==============================================================================
 set -euo pipefail
 

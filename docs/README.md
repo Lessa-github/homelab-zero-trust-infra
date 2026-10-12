@@ -7,7 +7,7 @@
 
 ---
 
-## 📋 Executive Summary
+## 📋 Executive Summary :id=executive-summary
 
 This repository documents the production engineering, network architecture, automation, and SRE hardening of my **Zero-Trust Homelab Infrastructure** running on **Proxmox Virtual Environment (PVE)**.
 
@@ -23,7 +23,7 @@ Designed to solve a real-world enterprise engineering constraint:
 
 ---
 
-## 🧭 Engineering Timeline (2025 – Present)
+## 🧭 Engineering Timeline (2025 – Present) :id=engineering-timeline
 
 ```mermaid
 timeline
@@ -43,7 +43,7 @@ No infrastructure project succeeds by buying hardware blindly. The architecture 
 
 ---
 
-## 📐 Zero-Trust Network Topology
+## 📐 Zero-Trust Network Topology :id=network-topology
 
 ```mermaid
 flowchart TD
@@ -53,25 +53,33 @@ flowchart TD
 
     subgraph OVERLAY_MESH ["Encrypted WireGuard Mesh Overlay (NetBird)"]
         Tunnel["P2P Encrypted Tunnel (ChaCha20-Poly1305)"]
-        AdminDevice <-->|Cryptographic Handshake| Tunnel
     end
 
-    subgraph HYPERVISOR_NODE ["Proxmox VE Hypervisor Host (Host IP: 10.240.50.1 / vmbr0)"]
-        Tunnel <--> HostKernel["Linux Kernel Routing & cgroups v2 Governor"]
+    subgraph HYPERVISOR_NODE ["Proxmox VE Hypervisor Host (10.240.50.1)"]
+        HostKernel["Linux Kernel Routing & cgroups v2 Governor"]
     end
+
+    AdminDevice <-->|Cryptographic Handshake| Tunnel
+    Tunnel <--> HostKernel
+
+    HostKernel -->|"vmbr0 Production Bridge"| NPM["Nginx Proxy Manager (:443)<br>IP: 172.28.40.103"]
+    HostKernel -.->|"vmbr1 Air-Gapped Bridge"| SANDBOX_HUB["Isolated L2 Virtual Switch<br>(No Internet Gateway)"]
 
     subgraph PROD_VLAN ["Production Service Zone (172.28.40.0/24)"]
-        HostKernel --> NPM["Nginx Proxy Manager (:443)<br>IP: 172.28.40.103"]
-        NPM -->|Forward-Auth| AUTH["Authentik SSO (WebAuthn / Passkeys)<br>IP: 172.28.40.111"]
-        NPM -->|0.2ms DNS| ADG["AdGuard Home DNS (:53 DoH)<br>IP: 172.28.40.112"]
-        NPM -->|GitOps Engine| KOM["Komodo Orchestrator (:9120)<br>IP: 172.28.40.109"]
-        NPM -->|Telemetry| KUMA["Uptime Kuma v2 + Dozzle Logs<br>IP: 172.28.40.107"]
-        NPM -->|AI Gateway| OMNI["OmniRoute AI Gateway (:20128)<br>IP: 172.28.40.114"]
+        direction TB
+        NPM["Nginx Proxy Manager (:443)<br>IP: 172.28.40.103"]
+        AUTH["Authentik SSO (Passkeys / CT 111)"]
+        ADG["AdGuard Home (0.2ms Cache / CT 112)"]
+        KOM["Komodo GitOps Orchestrator (CT 109)"]
+        OMNI["OmniRoute AI Gateway (CT 114)"]
+        NPM --> AUTH & ADG
+        AUTH & ADG --> KOM & OMNI
     end
 
-    subgraph AIRGAPPED_VLAN ["Air-Gapped Sandbox Zone (192.168.199.0/24 / vmbr1)"]
-        HostKernel -.->|Isolated L2 Bridge| VELOC["Velociraptor DFIR (67 MB RAM)<br>IP: 192.168.199.123"]
-        HostKernel -.->|Fake Internet| INET["INetSim Simulation Daemon<br>IP: 192.168.199.202"]
+    subgraph AIRGAPPED_VLAN ["Air-Gapped Sandbox Zone (192.168.199.0/24)"]
+        VELOC["Velociraptor DFIR (67 MB RAM / CT 123)"]
+        INET["INetSim Fake Internet (CT 202)"]
+        SANDBOX_HUB -.-> VELOC & INET
     end
 ```
 
@@ -85,7 +93,7 @@ flowchart TD
 
 ---
 
-## 📊 24/7 Production Services Matrix (12 LXCs)
+## 📊 24/7 Production Services Matrix (12 LXCs) :id=services-matrix
 
 All persistent services run inside **Debian 12 unprivileged LXC containers** (`unprivileged: 1`) on dedicated storage volumes:
 
@@ -106,7 +114,7 @@ All persistent services run inside **Debian 12 unprivileged LXC containers** (`u
 
 ---
 
-## 🛡️ Security Hardening & Passkeys SSO
+## 🛡️ Security Hardening & Passkeys SSO :id=security-hardening
 
 ```mermaid
 sequenceDiagram
@@ -134,7 +142,7 @@ sequenceDiagram
 
 ---
 
-## ⚙️ SRE Telemetry & Kernel Tuning
+## ⚙️ SRE Telemetry & Kernel Tuning :id=sre-telemetry
 
 To prevent **telemetry feedback loops** where observability agents consume more compute than the actual workloads, we established a frugal SRE baseline:
 
@@ -164,7 +172,7 @@ net.ipv4.conf.all.arp_announce = 2
 
 ---
 
-## 🛠️ Infrastructure CLI Controller: labctl.sh
+## 🛠️ Infrastructure CLI Controller: labctl.sh :id=cli-controller
 
 The infrastructure includes an automated CLI controller with formatted `--help` output:
 
@@ -190,7 +198,7 @@ Options:
 
 ---
 
-## 🔗 Connected Repositories & Live Portals
+## 🔗 Connected Portals & Repositories :id=connected-portals
 
 * 🛡️ **[Cyber DFIR Training Lab](https://lessa-github.github.io/cyber-dfir-training-lab/)** — Digital Forensics, Velociraptor (67MB RAM) & Purple Teaming.
 * 🧠 **[Sovereign AI Workspace](https://lessa-github.github.io/sovereign-ai-workspace/)** — Multi-Provider Gateway, Caveman Compression & Private Search.

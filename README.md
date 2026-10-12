@@ -32,25 +32,33 @@ flowchart TD
 
     subgraph OVERLAY_MESH ["Encrypted WireGuard Mesh Overlay (NetBird)"]
         Tunnel["P2P Encrypted Tunnel (ChaCha20-Poly1305)"]
-        AdminDevice <-->|Cryptographic Handshake| Tunnel
     end
 
-    subgraph HYPERVISOR_NODE ["Proxmox VE Hypervisor Host (Host IP: 10.240.50.1 / vmbr0)"]
-        Tunnel <--> HostKernel["Linux Kernel Routing & cgroups v2 Governor"]
+    subgraph HYPERVISOR_NODE ["Proxmox VE Hypervisor Host (10.240.50.1)"]
+        HostKernel["Linux Kernel Routing & cgroups v2 Governor"]
     end
+
+    AdminDevice <-->|Cryptographic Handshake| Tunnel
+    Tunnel <--> HostKernel
+
+    HostKernel -->|"vmbr0 Production Bridge"| NPM["Nginx Proxy Manager (:443)<br>IP: 172.28.40.103"]
+    HostKernel -.->|"vmbr1 Air-Gapped Bridge"| SANDBOX_HUB["Isolated L2 Virtual Switch<br>(No Internet Gateway)"]
 
     subgraph PROD_VLAN ["Production Service Zone (172.28.40.0/24)"]
-        HostKernel --> NPM["Nginx Proxy Manager (:443)<br>IP: 172.28.40.103"]
-        NPM -->|Forward-Auth| AUTH["Authentik SSO (WebAuthn / Passkeys)<br>IP: 172.28.40.111"]
-        NPM -->|0.2ms DNS| ADG["AdGuard Home DNS (:53 DoH)<br>IP: 172.28.40.112"]
-        NPM -->|GitOps Engine| KOM["Komodo Orchestrator (:9120)<br>IP: 172.28.40.109"]
-        NPM -->|Telemetry| KUMA["Uptime Kuma v2 + Dozzle Logs<br>IP: 172.28.40.107"]
-        NPM -->|AI Gateway| OMNI["OmniRoute AI Gateway (:20128)<br>IP: 172.28.40.114"]
+        direction TB
+        NPM["Nginx Proxy Manager (:443)<br>IP: 172.28.40.103"]
+        AUTH["Authentik SSO (Passkeys / CT 111)"]
+        ADG["AdGuard Home (0.2ms Cache / CT 112)"]
+        KOM["Komodo GitOps Orchestrator (CT 109)"]
+        OMNI["OmniRoute AI Gateway (CT 114)"]
+        NPM --> AUTH & ADG
+        AUTH & ADG --> KOM & OMNI
     end
 
-    subgraph AIRGAPPED_VLAN ["Air-Gapped Sandbox Zone (192.168.199.0/24 / vmbr1)"]
-        HostKernel -.->|Isolated L2 Bridge| VELOC["Velociraptor DFIR (67 MB RAM)<br>IP: 192.168.199.123"]
-        HostKernel -.->|Fake Internet| INET["INetSim Simulation Daemon<br>IP: 192.168.199.202"]
+    subgraph AIRGAPPED_VLAN ["Air-Gapped Sandbox Zone (192.168.199.0/24)"]
+        VELOC["Velociraptor DFIR (67 MB RAM / CT 123)"]
+        INET["INetSim Fake Internet (CT 202)"]
+        SANDBOX_HUB -.-> VELOC & INET
     end
 ```
 

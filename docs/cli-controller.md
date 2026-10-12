@@ -1,10 +1,10 @@
-# 🛠️ labctl: Controlador CLI de Infraestrutura
+# 🛠️ labctl: Infrastructure CLI Controller
 
-O `labctl.sh` é um utilitário de terminal em Bash construído para automatizar a manutenção rotineira do Proxmox VE e dos contêineres de serviços com saída sanitizada.
+`labctl.sh` is an idempotent Bash terminal utility developed to automate routine Proxmox VE hypervisor maintenance and container lifecycle tasks with fully sanitized outputs.
 
 ---
 
-## 💻 Interface de Linha de Comando (`--help`)
+## 💻 Command Line Interface (`--help`)
 
 ```text
 ===================================================================
@@ -27,6 +27,6 @@ Options:
 
 ---
 
-## 🔒 Princípio de Sanitização de Saída
+## 🔒 Output Sanitization by Design
 
-Quando a flag `-s` ou `--sanitized` é utilizada, qualquer IP de sub-rede doméstica ou endereço WAN é automaticamente mascarado para faixas de documentação corporativa (`172.28.40.x`), garantindo que capturas de tela ou logs de auditoria possam ser compartilhados sem risco de vazamento de informações do ambiente real.
+When the `-s` or `--sanitized` flag is passed, any internal domestic IP addresses, NetBird peer IDs, or hardware identifiers are dynamically mapped to standardized corporate documentation ranges (`172.28.40.x`). This ensures terminal outputs, audit logs, and diagnostic screenshots can be published publicly without exposing production infrastructure coordinates.

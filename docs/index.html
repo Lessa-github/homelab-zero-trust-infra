@@ -29,14 +29,14 @@
     .sidebar {
       background-color: #060911 !important;
       border-right: 1px solid #1e293b !important;
-      width: 290px !important;
+      width: 280px !important;
     }
     .sidebar-nav {
       padding: 10px 0 30px 15px !important;
     }
     .sidebar-nav a {
       color: #94a3b8 !important;
-      font-size: 0.92rem !important;
+      font-size: 0.96rem !important;
       transition: all 0.2s ease !important;
       border-left: 2px solid transparent !important;
       padding-left: 8px !important;
@@ -56,14 +56,19 @@
     .app-name-link {
       font-weight: 700;
       color: #38bdf8 !important;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
     }
+    /* Expanded Fluid Widescreen Layout */
     .content {
-      padding-top: 15px !important;
+      padding-top: 20px !important;
+      max-width: 100% !important;
     }
     .markdown-section {
-      max-width: 980px !important;
-      padding: 30px 45px 60px 45px !important;
+      max-width: 95% !important;
+      margin: 0 auto !important;
+      padding: 30px 35px 80px 35px !important;
+      font-size: 1rem !important;
+      line-height: 1.7 !important;
     }
     code, pre {
       font-family: 'JetBrains Mono', monospace !important;
@@ -74,6 +79,19 @@
       border-left: 3px solid #00f0ff !important;
       border-radius: 8px !important;
       box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
+      font-size: 0.95rem !important;
+    }
+    code {
+      color: #38bdf8 !important;
+      background-color: rgba(56, 189, 248, 0.1) !important;
+      padding: 2px 6px !important;
+      border-radius: 4px !important;
+      font-size: 0.92rem !important;
+    }
+    pre code {
+      color: #e2e8f0 !important;
+      background-color: transparent !important;
+      padding: 0 !important;
     }
     .markdown-section blockquote {
       border-left: 4px solid #06b6d4;
@@ -81,6 +99,7 @@
       color: #cbd5e1;
       border-radius: 0 8px 8px 0;
       padding: 12px 20px;
+      font-size: 1rem !important;
     }
     .markdown-section h1 { 
       color: #38bdf8; 
@@ -96,13 +115,13 @@
     }
     .markdown-section h3 { color: #10b981; margin-top: 2rem; }
     
-    /* High-Contrast Dark Hacker Table */
+    /* High-Contrast Spacious Dark Hacker Table */
     .markdown-section table {
       display: table !important;
       width: 100% !important;
       border-collapse: collapse !important;
       margin: 24px 0 !important;
-      background-color: #090d16 !important;
+      background-color: #0d1322 !important;
       border: 1px solid #1e293b !important;
       border-radius: 8px !important;
       overflow: hidden !important;
@@ -115,16 +134,16 @@
       transition: background-color 0.15s ease !important;
     }
     .markdown-section table tr:nth-child(2n) {
-      background-color: #111827 !important;
+      background-color: #131b2e !important;
     }
     .markdown-section table tr:hover {
       background-color: #1e293b !important;
     }
     .markdown-section table th {
-      background-color: #0f172a !important;
+      background-color: #161e2e !important;
       color: #38bdf8 !important;
       font-weight: 700 !important;
-      font-size: 0.88rem !important;
+      font-size: 0.95rem !important;
       text-transform: uppercase !important;
       letter-spacing: 0.05em !important;
       border: 1px solid #334155 !important;
@@ -132,38 +151,35 @@
       text-align: left !important;
     }
     .markdown-section table td {
-      color: #f1f5f9 !important;
+      color: #f8fafc !important;
       border: 1px solid #1e293b !important;
-      padding: 11px 16px !important;
-      font-size: 0.92rem !important;
+      padding: 12px 16px !important;
+      font-size: 0.95rem !important;
     }
     .markdown-section table td code {
       background-color: #1e293b !important;
       color: #38bdf8 !important;
       padding: 2px 6px !important;
       border-radius: 4px !important;
-      font-size: 0.85rem !important;
+      font-size: 0.9rem !important;
     }
 
-    /* Centered Mermaid Diagrams & Dark Hacker Container */
+    /* Diagram Centering: Natural Flow, Zero-Trust Topology explicitly centered */
     .mermaid {
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
-      margin: 2.5rem auto !important;
-      padding: 1.5rem !important;
-      background-color: #070a13 !important;
-      border: 1px solid #1e293b !important;
-      border-radius: 10px !important;
-      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5) !important;
-      overflow-x: auto !important;
       text-align: center !important;
+      margin: 2rem 0 !important;
+      overflow-x: auto !important;
     }
     .mermaid svg {
       max-width: 100% !important;
       height: auto !important;
       margin: 0 auto !important;
-      display: block !important;
+    }
+    #network-topology + p + div.mermaid,
+    #network-topology ~ div.mermaid:first-of-type {
+      display: flex !important;
+      justify-content: center !important;
+      margin: 2rem auto !important;
     }
   </style>
   <script src="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
@@ -191,8 +207,8 @@
     window.$docsify = {
       name: '🏛️ Zero-Trust Homelab',
       repo: 'https://github.com/Lessa-github/homelab-zero-trust-infra',
-      loadSidebar: true,
-      loadNavbar: true,
+      loadSidebar: '_sidebar.md?t=' + Date.now(),
+      loadNavbar: '_navbar.md?t=' + Date.now(),
       subMaxLevel: 2,
       search: {
         placeholder: 'Search topics & architectures...',

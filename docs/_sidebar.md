@@ -1,8 +1,17 @@
 * [📋 Executive Summary](#executive-summary)
-* [🧭 Engineering Timeline](#engineering-timeline-2025--present)
-* [📐 Zero-Trust Topology](#zero-trust-network-topology)
-* [📊 24/7 Services Matrix](#247-production-services-matrix-12-cts)
-* [🛡️ Security & Passkeys SSO](#security-hardening--passkeys-sso)
-* [⚙️ SRE Telemetry & Tuning](#sre-telemetry--kernel-tuning)
-* [🛠️ labctl CLI Controller](#infrastructure-cli-controller-labctlsh)
-* [🔗 Connected Repositories](#connected-repositories--live-portals)
+* [🧭 Engineering Timeline](#engineering-timeline)
+* [📐 Zero-Trust Topology](#network-topology)
+* [📊 24/7 Services Matrix](#services-matrix)
+* [🛡️ Security Hardening](#security-hardening)
+* [⚙️ SRE Telemetry & Tuning](#sre-telemetry)
+* [🛠️ labctl CLI Controller](#cli-controller)
+* [🔗 Connected Portals](#connected-portals)
+
+---
+
+* **🌐 Engineering Portals**
+  * <a href="/homelab-zero-trust-infra/docs/" target="_self">🏛️ Zero-Trust Homelab</a>
+  * <a href="/cyber-dfir-training-lab/docs/" target="_self">🛡️ Cyber DFIR Lab</a>
+  * <a href="/sovereign-ai-workspace/docs/" target="_self">🧠 Sovereign AI</a>
+  * <a href="/homelab-graveyard-and-lessons-learned/docs/" target="_self">⚰️ Homelab Graveyard</a>
+  * <a href="https://lessa-github.github.io/gabriel-portfolio/" target="_blank">🌐 Gabriel Lessa Portfolio</a>

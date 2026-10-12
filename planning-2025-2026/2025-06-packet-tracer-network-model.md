@@ -1,23 +1,23 @@
-# Modelo de Topologia no Cisco Packet Tracer e Matriz de Sub-Redes
+# Cisco Packet Tracer Topology Model & Subnet Allocation Matrix
 
-**Data:** Junho de 2025  
-**Autor:** Gabriel Santa Rosa Lessa  
+**Date:** June 2025  
+**Author:** Gabriel Santa Rosa Lessa  
 
-## 1. Segmentação Teórica de Sub-Redes RFC 1918
+## 1. Theoretical RFC 1918 Subnet Segmentation
 
-Antes de encostar em cabos ou hypervisors, a topologia foi desenhada no Cisco Packet Tracer com 3 zonas de confiança:
+Prior to racking physical hardware or connecting Ethernet cables, the network topology was modeled in Cisco Packet Tracer across 3 distinct trust zones:
 
 ```mermaid
 flowchart TD
-    WAN["WAN / Internet Pública"] --> FW["Firewall Perimetral / Roteador"]
-    FW --> DMZ["Zona de Proxy & DNS (172.28.40.0/28)"]
-    DMZ --> SERVICES["Zona de Serviços Internos (172.28.40.16/28)"]
-    FW -.->|Bridge Isolada sem Roteamento| AIRGAP["Zona Air-Gapped de Ciberlab (192.168.199.0/24)"]
+    WAN["Public Internet / WAN"] --> FW["Perimeter Firewall / Residential Router"]
+    FW --> DMZ["Proxy & DNS Ingress Tier (172.28.40.0/28)"]
+    DMZ --> SERVICES["Internal Services Tier (172.28.40.16/28)"]
+    FW -.->|Isolated L2 Bridge Without Routing| AIRGAP["Air-Gapped Cyber Sandbox Zone (192.168.199.0/24)"]
 ```
 
-### Matriz de Endereçamento IP de Documentação:
-* **Gateway Primário / Hypervisor:** `172.28.40.1`
+### Documented Synthetic IP Allocation:
+* **Primary Gateway / Hypervisor Host:** `172.28.40.1`
 * **Nginx Reverse Proxy:** `172.28.40.10`
 * **AdGuard Home DNS:** `172.28.40.12`
-* **Central de Identidade (Authentik SSO):** `172.28.40.15`
-* **Rede de Treinamento Isolada:** `192.168.199.0/24` (Sem gateway de saída)
+* **Central Identity Provider (Authentik SSO):** `172.28.40.15`
+* **Isolated Cyber Training Bridge:** `192.168.199.0/24` (No default outbound route)

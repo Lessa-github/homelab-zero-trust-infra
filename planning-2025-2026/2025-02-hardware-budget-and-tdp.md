@@ -1,18 +1,18 @@
-# Análise de Dimensionamento de Hardware e Orçamento Térmico (TDP)
+# Hardware Sizing Analysis & Thermal Design Power (TDP) Budget
 
-**Data:** Fevereiro de 2025  
-**Contexto:** Planejamento inicial para aquisição de nó bare-metal em Vancouver  
-**Objetivo:** Rodar hypervisor Proxmox VE 24/7 com consumo elétrico mínimo e máxima densidade de containers.
+**Date:** February 2025  
+**Context:** Initial planning phase for bare-metal node acquisition in Vancouver  
+**Objective:** Operate a 24/7 Proxmox VE hypervisor with minimal electricity consumption and maximum LXC container density.
 
-## 1. O Dilema: Servidor Rack Usado vs. Mini-PC Eficiente
+## 1. The Architectural Dilemma: Used Enterprise Rack Server vs. Energy-Efficient Mini-PC
 
-Ao planejar o laboratório em 2025, comparei três abordagens de hardware:
+During 2025 capacity planning, three hardware form factors were benchmarked:
 
-| Categoria | Hardware Exemplo | RAM | Consumo Típico (Idle / Load) | Ruído / Espaço | Custo de Energia Anual |
+| Category | Representative Hardware | RAM | Typical Power Draw (Idle / Load) | Noise / Footprint | Estimated Annual Power Cost |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Servidor Rack 1U/2U** | Dell PowerEdge R620 (Xeon E5) | 64 GB DDR3 | 120W / 240W | Muito alto (turbina) | ~$180 CAD |
-| **Desktop Torre ATX** | Core i5 8th Gen Desktop | 32 GB DDR4 | 45W / 95W | Médio | ~$70 CAD |
-| **Mini-PC Dedicado** | Intel Core i3 / Core 12th Mini | 32 GB DDR4 | **12W / 28W** | **Inaudível (<22 dB)** | **~$20 CAD** |
+| **1U/2U Rack Server** | Dell PowerEdge R620 (Xeon E5) | 64 GB DDR3 | 120W / 240W | Extreme turbine noise (>55 dB) | ~$180 CAD |
+| **ATX Desktop Tower** | Core i5 8th Gen Desktop | 32 GB DDR4 | 45W / 95W | Moderate footprint | ~$70 CAD |
+| **Dedicated Mini-PC** | Intel 12th Gen Mini-PC | 32 GB DDR4 | **12W / 28W** | **Near-silent (<22 dB)** | **~$20 CAD** |
 
-### Conclusão de Engenharia
-Em ambiente residencial, servidores enterprise descartados são armadilhas financeiras. O custo elétrico acumulado e o ruído inviabilizam a operação 24/7. A escolha por um **Mini-PC com 32 GB de RAM DDR4 e armazenamento NVMe de alta velocidade** oferece a melhor relação IOPS/Watt, permitindo rodar mais de 15 containers LXC simultâneos com 25 GB de folga em repouso.
+### Engineering Verdict
+In residential and urban apartment deployments, surplus enterprise rack servers represent financial and operational liabilities. Cumulative power expenses, thermal heat dissipation, and acoustic noise prevent sustainable 24/7 operation. Selecting an **energy-efficient Mini-PC paired with 32 GB of DDR4 RAM and high-endurance NVMe storage** delivers the optimal IOPS-per-watt efficiency, comfortably accommodating 15+ concurrent LXC containers with 25 GB of idle RAM headroom.
