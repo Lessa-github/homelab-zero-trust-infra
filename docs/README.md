@@ -1,7 +1,7 @@
 # 🏛️ Zero-Trust High-Density Homelab Infrastructure
 
 > **Author:** Gabriel Santa Rosa Lessa  
-> **Timeline:** 2025 – Present (School Research 2025 - Aug/2026 · Intensive Hands-on Aug/2026 - Present)  
+> **Timeline:** 2025 – Present (College Studies 2025 - Aug/2026 · Intensive Hands-on Aug/2026 - Present)  
 > **Hypervisor:** Proxmox VE 8.x (Custom Linux Kernel, cgroups v2 Governor)  
 > **Architecture Core:** Zero WAN Port-Forwarding · P2P WireGuard Mesh · Centralized Biometric SSO
 
@@ -27,16 +27,16 @@ Designed to solve a real-world enterprise engineering constraint:
 
 ```mermaid
 timeline
-    title Engineering Journey: From School Theory to Production SRE (2025 - 2026)
-    2025 (Full School Year) : Linux & Network Fundamentals : Sizing & TDP Calculations : Cisco Packet Tracer Topologies : Subnet Matrix (172.28.40.0/24)
+    title Engineering Journey: From College Theory to Production SRE (2025 - 2026)
+    2025 (Academic Studies) : Linux & Network Fundamentals : Sizing & TDP Calculations : Cisco Packet Tracer Topologies : Subnet Matrix (172.28.40.0/24)
     Jan - Jul 2026 (Final Academic Stretch) : Zero-Trust Threat Modeling : WireGuard & Linux Namespaces : Air-Gapped DFIR Bridge Planning : Final Hardware Sizing
-    August 2026 (Classes Concluded) : High School Graduation : Physical Hardware Arrival : Proxmox VE 8 Setup : Multi-Bridge Networking (vmbr0/1)
+    August 2026 (Classes Concluded) : College Graduation : Physical Hardware Arrival : Proxmox VE 8 Setup : Multi-Bridge Networking (vmbr0/1)
     September 2026 (Full Hands-on Deployment) : NetBird Mesh (0 WAN Ports) : AdGuard DNS (0.2ms Cache) : NPM Wildcard SSL : Portainer -> Komodo GitOps
     October 2026 (DFIR & Sovereign AI) : Velociraptor at 67 MB RAM : Atomic Red Team (344 Tests) : OmniRoute AI Gateway : Ephemeral Zero-Knowledge Secrets
 ```
 
 ### The Value of 19 Months of Planning (Jan/2025 - Aug/2026)
-No infrastructure project succeeds by buying hardware blindly. The architecture was designed during high school in Brazil before writing a single configuration line:
+No infrastructure project succeeds by buying hardware blindly. The architecture was designed during college studies before writing a single configuration line:
 1. **Capacity Planning:** Calculating RAM budgets (32 GB DDR4 allocation matrix) and thermal design power (TDP target of 15W - 35W) for 24/7 silent operation.
 2. **Subnet Modeling:** Simulating VLANs and routing matrices in Cisco Packet Tracer with private documentation subnets (`172.28.40.0/24`).
 3. **Zero-Trust Rule of Law:** Enforcing the architectural rule that opening WAN ports creates unacceptable attack surface.
