@@ -25,41 +25,30 @@ Designed to operate **24/7 with high service density (12 persistent LXCs running
 ## 📐 Zero-Trust Network Topology
 
 ```mermaid
-flowchart TD
-    subgraph EXTERNAL_WAN ["External Boundary (Zero Open WAN Ports)"]
-        AdminDevice["Administrator Laptop / Mobile Device<br>(WireGuard Peer: 10.240.50.2)"]
-    end
-
-    subgraph OVERLAY_MESH ["Encrypted WireGuard Mesh Overlay (NetBird)"]
-        Tunnel["P2P Encrypted Tunnel (ChaCha20-Poly1305)"]
-    end
-
-    subgraph HYPERVISOR_NODE ["Proxmox VE Hypervisor Host (10.240.50.1)"]
-        HostKernel["Linux Kernel Routing & cgroups v2 Governor"]
-    end
-
-    AdminDevice <-->|Cryptographic Handshake| Tunnel
-    Tunnel <--> HostKernel
-
-    HostKernel -->|"vmbr0 Production Bridge"| NPM["Nginx Proxy Manager (:443)<br>IP: 172.28.40.103"]
-    HostKernel -.->|"vmbr1 Air-Gapped Bridge"| SANDBOX_HUB["Isolated L2 Virtual Switch<br>(No Internet Gateway)"]
-
-    subgraph PROD_VLAN ["Production Service Zone (172.28.40.0/24)"]
+graph LR
+    subgraph INGRESS ["1. Zero-Trust Ingress"]
         direction TB
-        NPM["Nginx Proxy Manager (:443)<br>IP: 172.28.40.103"]
-        AUTH["Authentik SSO (Passkeys / CT 111)"]
-        ADG["AdGuard Home (0.2ms Cache / CT 112)"]
-        KOM["Komodo GitOps Orchestrator (CT 109)"]
-        OMNI["OmniRoute AI Gateway (CT 114)"]
-        NPM --> AUTH & ADG
-        AUTH & ADG --> KOM & OMNI
+        Admin["Administrator Device<br>(Peer: 10.240.50.2)"]
+        Mesh["NetBird Mesh Overlay<br>(ChaCha20-Poly1305)"]
+        Admin <-->|P2P Handshake| Mesh
     end
 
-    subgraph AIRGAPPED_VLAN ["Air-Gapped Sandbox Zone (192.168.199.0/24)"]
-        VELOC["Velociraptor DFIR (67 MB RAM / CT 123)"]
-        INET["INetSim Fake Internet (CT 202)"]
-        SANDBOX_HUB -.-> VELOC & INET
+    subgraph PVE ["2. Proxmox VE 8 Hypervisor Host"]
+        Kernel["Linux Kernel 6.8 Routing<br>cgroups v2 Resource Governor"]
     end
+
+    Mesh -->|Zero Open WAN Ports| Kernel
+
+    subgraph EGRESS ["3. Three Dedicated Architectural Branches"]
+        direction TB
+        VMBR0["vmbr0 (Production Core · 172.28.40.0/24)<br>NPM Reverse Proxy :443 · Authentik SSO · AdGuard DNS"]
+        VMBR1["vmbr1 (Air-Gapped Sandbox · 192.168.199.0/24)<br>Isolated L2 Switch · Velociraptor · INetSim (No Gateway)"]
+        WT0["wt0 (Management Overlay · 10.240.50.0/24)<br>Proxmox Web UI :8006 · Host SSH Bastion :22"]
+    end
+
+    Kernel -->|"vmbr0 Bridge"| VMBR0
+    Kernel -.->|"vmbr1 Isolated"| VMBR1
+    Kernel ==>|"wt0 Encrypted Mesh"| WT0
 ```
 
 ---
