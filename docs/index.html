@@ -337,27 +337,19 @@
       gap: 6px;
     }
 
-    /* Anti-Clipping Rule: Ensure SVG foreignObject labels never eat letters or words */
-    .mermaid svg foreignObject {
+    /* Mermaid Box & Label Layout Protection */
+    .mermaid svg .edgeLabel {
       overflow: visible !important;
     }
-    .mermaid svg foreignObject > div {
+    .mermaid svg .edgeLabel span {
       overflow: visible !important;
-      width: auto !important;
-      min-width: 100% !important;
-      white-space: nowrap !important;
+      padding: 2px 6px !important;
     }
-    .mermaid svg foreignObject p {
-      margin: 0 !important;
-      padding: 0 4px !important;
-      white-space: nowrap !important;
+    .mermaid svg .node foreignObject {
+      overflow: visible;
     }
     .mermaid svg .cluster foreignObject {
-      overflow: visible !important;
-    }
-    .mermaid svg .cluster foreignObject div {
-      overflow: visible !important;
-      white-space: nowrap !important;
+      overflow: visible;
     }
 
     /* Mermaid Global High-Contrast SVG Typography & Timeline Text Colors */
@@ -418,6 +410,12 @@
     mermaid.initialize({
       startOnLoad: false,
       theme: 'dark',
+      flowchart: {
+        htmlLabels: true,
+        padding: 16,
+        nodeSpacing: 40,
+        rankSpacing: 40
+      },
       themeVariables: {
         darkMode: true,
         background: '#070a13',
@@ -441,6 +439,7 @@
         signalColor: '#f8fafc',
         signalTextColor: '#f8fafc',
         labelTextColor: '#f8fafc',
+        fontSize: '14px',
         fontFamily: 'Inter, sans-serif'
       }
     });
