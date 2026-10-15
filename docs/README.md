@@ -60,17 +60,17 @@ flowchart TD
 
     Overlay -->|"Zero Open WAN Ports"| HostKernel
 
-    subgraph BR0 ["Branch 1: vmbr0 Production Core (172.28.40.0/24)"]
+    subgraph BR0 ["Branch 1: vmbr0 Core (172.28.40.0/24)"]
         direction LR
         NPM["NPM Reverse Proxy (:443)"] --> AUTH["Authentik SSO"] & ADG["AdGuard DNS"] & KOM["Komodo GitOps"]
     end
 
-    subgraph BR1 ["Branch 2: vmbr1 Air-Gapped Sandbox (192.168.199.0/24)"]
+    subgraph BR1 ["Branch 2: vmbr1 Sandbox (192.168.199.0/24)"]
         direction LR
         Victim["Victim Target (VM 205)"] -->|"Trapped L2 Traffic"| INetSim["INetSim Fake Net (CT 202)"]
     end
 
-    subgraph BR2 ["Branch 3: wt0 Management Overlay (10.240.50.0/24)"]
+    subgraph BR2 ["Branch 3: wt0 Overlay (10.240.50.0/24)"]
         direction LR
         PVEUI["Proxmox Web UI (:8006)"] --- SSH["Host SSH Bastion (:22)"]
     end

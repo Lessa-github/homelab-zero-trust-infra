@@ -337,6 +337,29 @@
       gap: 6px;
     }
 
+    /* Anti-Clipping Rule: Ensure SVG foreignObject labels never eat letters or words */
+    .mermaid svg foreignObject {
+      overflow: visible !important;
+    }
+    .mermaid svg foreignObject > div {
+      overflow: visible !important;
+      width: auto !important;
+      min-width: 100% !important;
+      white-space: nowrap !important;
+    }
+    .mermaid svg foreignObject p {
+      margin: 0 !important;
+      padding: 0 4px !important;
+      white-space: nowrap !important;
+    }
+    .mermaid svg .cluster foreignObject {
+      overflow: visible !important;
+    }
+    .mermaid svg .cluster foreignObject div {
+      overflow: visible !important;
+      white-space: nowrap !important;
+    }
+
     /* Mermaid Global High-Contrast SVG Typography & Timeline Text Colors */
     .mermaid svg text,
     .mermaid svg text *,
