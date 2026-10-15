@@ -197,29 +197,93 @@ Options:
 
 ## 📦 Vetted Open-Source Upstream Stacks :id=vetted-repositories
 
-To maintain a zero-compromise security posture and adhere to our **Frugal SRE** principles, every piece of software running across the homelab undergoes a rigorous **AppSec Supply Chain Audit** prior to deployment in unprivileged LXC containers.
+To maintain a zero-compromise security posture and adhere to our **Frugal SRE** principles, every piece of software evaluated across the homelab undergoes a rigorous **AppSec Supply Chain Audit** prior to deployment in unprivileged LXC containers or virtualized sandbox environments.
 
-Below is the verified upstream repository directory powering the infrastructure:
+This curated directory compiles the complete catalog of open-source projects, tools, and Model Context Protocol (MCP) servers across four operational lifecycle stages:
 
-| Project & Repository | Category & Target | License | Security Architecture & AppSec Audit Findings |
+---
+
+### 🟢 1. Active Production Stacks (Currently Running 24/7)
+
+The core operational services powering the zero-trust homelab and cyber defense lab on the Proxmox VE host:
+
+| Project & Repository | Target Role | License | Architectural Role & AppSec Audit Findings |
 | :--- | :--- | :--- | :--- |
-| **[NetBird](https://github.com/netbirdio/netbird)** | Mesh Network (`PVE Host`) | `BSD-3-Clause` | Encrypted WireGuard P2P overlay with Ed25519 peer identity; zero WAN exposure. |
-| **[OPNsense Core](https://github.com/opnsense/core)** | Perimeter Firewall (`PVE vmbr0/1`) | `BSD-2-Clause` | Virtualized FreeBSD stateful inspection; isolated air-gap routing; no default gateway on `vmbr1`. |
-| **[Nginx Proxy Manager](https://github.com/NginxProxyManager/nginx-proxy-manager)** | Reverse Proxy (`CT 103`) | `MIT` | Dynamic upstream HTTP/2 routing, automated DuckDNS wildcard SSL DNS-challenge certificates. |
-| **[AdGuard Home](https://github.com/AdguardTeam/AdGuardHome)** | DNS Firewall (`CT 112`) | `GPL-3.0` | 0.2ms cached DNS queries (`cache_optimistic: true`); encrypted DNS-over-HTTPS (DoH) upstreams. |
-| **[Authentik](https://github.com/goauthentik/authentik)** | Identity & SSO (`CT 111`) | `GPL-3.0` | Centralized Forward-Auth and OIDC identity gateway; hardware WebAuthn/Passkey enforcement. |
+| **[NetBird](https://github.com/netbirdio/netbird)** | Mesh Network (`PVE Host`) | `BSD-3-Clause` | Encrypted WireGuard P2P overlay with Ed25519 peer verification; eliminates residential port-forwarding. |
+| **[OPNsense Core](https://github.com/opnsense/core)** | Perimeter Routing (`PVE vmbr0/1`) | `BSD-2-Clause` | Virtualized FreeBSD stateful inspection, strict inter-VLAN zoning, and air-gapped sandbox network isolation. |
+| **[Nginx Proxy Manager](https://github.com/NginxProxyManager/nginx-proxy-manager)** | Reverse Proxy (`CT 103`) | `MIT` | Dynamic HTTP/2 TLS termination, WebSocket streaming, and automated DuckDNS wildcard SSL DNS-challenge. |
+| **[AdGuard Home](https://github.com/AdguardTeam/AdGuardHome)** | DNS Sinkhole (`CT 112`) | `GPL-3.0` | 0.2ms cached DNS queries (`cache_optimistic: true`); redundant upstream DNS-over-HTTPS (DoH) failover. |
+| **[Authentik](https://github.com/goauthentik/authentik)** | Identity & SSO (`CT 111`) | `GPL-3.0` | Centralized Forward-Auth gateway and OIDC provider enforcing hardware WebAuthn / FIDO2 Passkeys. |
 | **[Komodo Orchestrator](https://github.com/mbecker20/komodo)** | GitOps Engine (`CT 109`) | `GPL-3.0` | Declarative Rust-based container orchestrator; Periphery build agent runs in <18 MB RAM. |
-| **[Vaultwarden](https://github.com/dani-garcia/vaultwarden)** | Secrets Vault (`CT 108`) | `AGPL-3.0` | Frugal Rust implementation of Bitwarden API with SQLite; zero Java/Node heap overhead. |
-| **[SimpleLogin](https://github.com/simple-login/app)** | Email Privacy (`CT 110`) | `MIT` | PGP-encrypted disposable email aliasing suite preventing homelab credential harvesting. |
-| **[Beszel](https://github.com/henrygd/beszel)** | Hardware Telemetry (`CT 116`) | `MIT` | Go-based lightweight resource telemetry hub; S.M.A.R.T. disk monitoring with zero JVM bloat. |
-| **[Dozzle](https://github.com/amir20/dozzle)** | Log Streaming (`CT 113`) | `MIT` | Real-time container log aggregator via non-blocking WebSockets; zero disk-indexing overhead. |
+| **[Vaultwarden](https://github.com/dani-garcia/vaultwarden)** | Secrets Vault (`CT 108`) | `AGPL-3.0` | Frugal Rust implementation of Bitwarden API with SQLite; zero Java/Node heap overhead (<30 MB RAM). |
+| **[SimpleLogin](https://github.com/simple-login/app)** | Email Privacy (`CT 110`) | `MIT` | PGP-encrypted disposable email aliasing suite preventing credential correlation and marketing tracking. |
+| **[Beszel](https://github.com/henrygd/beszel)** | Hardware Telemetry (`CT 116`) | `MIT` | Go-based lightweight resource telemetry hub; S.M.A.R.T. disk monitoring with zero JVM telemetry loops. |
+| **[Dozzle](https://github.com/amir20/dozzle)** | Log Streaming (`CT 113`) | `MIT` | Real-time container log aggregator via non-blocking WebSockets; zero disk-indexing write tax on SSDs. |
 | **[Uptime Kuma](https://github.com/louislam/uptime-kuma)** | Availability Monitor (`CT 107`) | `MIT` | SQLite-backed synthetic health monitoring; automated alert webhooks on service degradation. |
-| **[Velociraptor](https://github.com/Velocidex/velociraptor)** | Endpoint DFIR (`CT 123`) | `AGPL-3.0` | Compiled static Go binary running in 67 MB RAM; on-demand VQL memory queries vs 6 GB SIEMs. |
-| **[OpenCTI](https://github.com/OpenCTI-Platform/opencti)** | Threat Intelligence (`CT 120`) | `Apache-2.0` | Structured STIX 2.1 threat intelligence platform with isolated Redis and search indices. |
+| **[Velociraptor](https://github.com/Velocidex/velociraptor)** | Endpoint DFIR (`CT 123`) | `AGPL-3.0` | Compiled static Go binary running in 67 MB RAM; on-demand VQL memory queries vs 6 GB SIEM clusters. |
+| **[OpenCTI](https://github.com/OpenCTI-Platform/opencti)** | Threat Intelligence (`CT 120`) | `Apache-2.0` | Structured STIX 2.1 threat intelligence platform with lean Redis caching and MITRE ATT&CK ontology. |
 | **[Atomic Red Team](https://github.com/redcanaryco/atomic-red-team)** | Purple Team (`Sandbox`) | `MIT` | 344 mapped MITRE ATT&CK atomic tests with automated post-execution telemetry cleanup. |
-| **[INetSim](https://github.com/inetsim/inetsim)** | Malware Analysis (`CT 202`) | `GPL-2.0` | Simulated DNS/HTTP/SMTP daemons for trapping rogue malware traffic in `vmbr1`. |
+| **[INetSim](https://github.com/inetsim/inetsim)** | Malware Analysis (`CT 202`) | `GPL-2.0` | Simulated DNS/HTTP/SMTP daemons for trapping rogue malware traffic inside isolated Layer 2 `vmbr1`. |
 | **[SearXNG](https://github.com/searxng/searxng)** | Private Search (`CT 114`) | `AGPL-3.0` | Zero-telemetry metasearch engine serving contextual JSON search API to autonomous AI agents. |
 | **[Ollama](https://github.com/ollama/ollama)** | Local LLM Engine (`CT 115`) | `MIT` | Lightweight local GGUF model runner supporting air-gapped sovereign inference fallback. |
+| **[Memos](https://github.com/usememos/memos)** | Knowledge Snippets (`CT 118`) | `MIT` | Privacy-first, lightweight Markdown card database for architecture notes and rapid scratchpads. |
+
+---
+
+### ⚰️ 2. Audited & Decommissioned Stacks (Retired with Lessons Learned)
+
+Software platforms that were systematically tested, benchmarked, and intentionally decommissioned due to excessive hardware taxation, architectural bloat, or security vulnerabilities:
+
+| Retired Platform & Repo | Former Role | Replacement | Primary SRE & AppSec Rationale |
+| :--- | :--- | :--- | :--- |
+| **[Portainer](https://github.com/portainer/portainer)** | Container Management | Komodo GitOps | Heavy Node/Go web stack; lack of declarative GitOps auto-sync in community edition; high idle memory. |
+| **[n8n](https://github.com/n8n-io/n8n)** | Workflow Automation | Hermes Agent + MCP | Heavy Node.js monolith consuming 1,450 MB RAM with continuous background polling loops. |
+| **[Asuri / Azuri](https://github.com/asuri-dev/asuri)** | SAST Code Scanner | Static SAST Pipeline | Disqualified during AppSec code audit due to unescaped `os.system()` arbitrary command injection flaws. |
+| **[Wazuh SIEM](https://github.com/wazuh/wazuh)** + **[OpenSearch](https://github.com/opensearch-project/OpenSearch)** | SIEM / XDR | Velociraptor VQL | Over 6 GB of RAM consumed by Java Virtual Machine (JVM) heaps with rapid NVMe endurance degradation. |
+| **[Homepage](https://github.com/gethomepage/homepage)** | Service Dashboard | Direct DNS Rewrites | Continuous client-side widget polling generated unnecessary API noise and CPU wakeups on idle containers. |
+| **[Matrix Synapse](https://github.com/element-hq/synapse)** + **[Element](https://github.com/element-hq/element-web)** | Chat Server | Native NetBird Channels | Python/Twisted homeserver consumed >500 MB RAM for single-user operation; complex federation overhead. |
+| **[Kasm Workspaces](https://github.com/kasmtech/workspaces-core)** | Container Streaming | Dedicated KVM Guests | Required privileged containers (`nesting=1`, DinD, FUSE) that compromised hypervisor isolation boundaries. |
+| **[Immich](https://github.com/immich-app/immich)** | Photo Management | External Cold Storage | Intensive machine learning face-recognition pipelines overwhelmed CPU quotas on a 250 GB SSD baseline. |
+
+---
+
+### 🚀 3. Future Hardware & Scaling Roadmap (Next-Machine Target Stacks)
+
+Enterprise software stacks slated for deployment upon hardware expansion (e.g., secondary multi-NIC node, dedicated NAS storage, or Alienware RTX 3070 Ti GPU server):
+
+| Project & Repository | Target Domain | Minimum Hardware Requirement | Intended Architectural Purpose |
+| :--- | :--- | :--- | :--- |
+| **[Suricata](https://github.com/OISF/suricata)** | Network NDR / IDS / IPS | Dedicated Multi-NIC Hardware | Multi-gigabit deep packet inspection and network threat detection tapping mirror ports. |
+| **[Zeek NSM](https://github.com/zeek/zeek)** | Behavioral Network Telemetry | 8 GB RAM + Dedicated SSD Volume | Compact protocol-level transaction logging (DNS, TLS, HTTP) for forensic hunting. |
+| **[TheHive](https://github.com/TheHive-Project/TheHive)** + **[Cortex](https://github.com/TheHive-Project/Cortex)** | SOC Case Management | 8 GB RAM (Elasticsearch Cluster) | Collaborative incident response workflow orchestration and automated observable enrichment. |
+| **[MISP](https://github.com/MISP/MISP)** | Threat Intelligence Sharing | 4 GB RAM + MySQL / Redis | Automated indicator of compromise (IOC) correlation and threat feed exchange with OpenCTI. |
+| **[Caldera](https://github.com/mitre/caldera)** | Automated Adversary Emulation | 4 vCPU + 8 GB RAM | MITRE ATT&CK automated adversary emulation plugins for continuous detection validation. |
+| **[Ghidra Server](https://github.com/NationalSecurityAgency/ghidra)** | Collaborative Reverse Engineering | 4 GB RAM (Shared Multi-User) | NSA reverse engineering suite configured with centralized multi-analyst project repository. |
+| **[GNS3 Server](https://github.com/GNS3/gns3-server)** | Enterprise Network Virtualization | 16 GB RAM + KVM Hardware Pass | Virtualized Cisco IOS-XE, Arista EOS, and Juniper Junos enterprise topology simulation. |
+| **[vLLM](https://github.com/vllm-project/vllm)** / **[SGLang](https://github.com/sgl-project/sglang)** | High-Throughput LLM Serving | NVIDIA GPU (RTX 3070 Ti 8GB VRAM) | PagedAttention inference server exposing OpenAI-compatible endpoints with FP16/AWQ quantization. |
+| **[Qdrant](https://github.com/qdrant/qdrant)** | Vector Database | 4 GB RAM + AVX2 Support | High-performance Rust vector search engine for autonomous AI long-term semantic memory retrieval. |
+| **[RustDesk Server](https://github.com/rustdesk/rustdesk-server)** | Sovereign Remote Desktop | 1 vCPU · 512 MB RAM | Self-hosted encrypted relay and rendezvous server for out-of-band graphical management. |
+| **[ownCloud Infinite Scale](https://github.com/owncloud/ocis)** | Sovereign Cloud Storage | Dedicated ZFS Pool / NAS | Cloud-native Go microservices file sync and sharing without PHP or external database dependencies. |
+| **[Whonix](https://github.com/Whonix/Whonix)** | Anonymous OSINT Lab | 4 GB RAM (Gateway + Workstation) | Dual-VM isolated OSINT investigation environment routing 100% of traffic through the Tor network. |
+
+---
+
+### 🔌 4. Model Context Protocol (MCP) Ecosystem & Agent Tooling
+
+Standardized tool servers and agent harnesses implementing Anthropic's **Model Context Protocol (MCP)**, connecting AI models to our local homelab infrastructure, telemetry pipelines, and development environments:
+
+| MCP Server / Harness | Source & Spec | Host Environment | Core Agent Capability & Tools Provided |
+| :--- | :--- | :--- | :--- |
+| **[MCP Specification](https://github.com/modelcontextprotocol/specification)** | Open Standard | Global Standard | Standardized protocol enabling secure tool invocation and resource discovery across LLMs. |
+| **[Playwright MCP](https://github.com/executeautomation/mcp-playwright)** | NPM / Local Harness | Node.js Runtime | Headless browser automation, visual screenshots, DOM snapshots, and E2E evaluation. |
+| **[Chrome DevTools MCP](https://github.com/GoogleChrome/chrome-devtools-mcp)** | Google Official | Chrome / Chromium | Live DOM inspection, CSS box-model auditing, console telemetry, and network request analysis. |
+| **[Memory Graph MCP](https://github.com/modelcontextprotocol/servers/tree/main/src/memory)** | Reference Server | Local SQLite / JSON | Persistent knowledge-graph memory storing entities, relations, and observations across sessions. |
+| **[Filesystem MCP](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem)** | Reference Server | Local Sandbox | Granular, path-restricted filesystem read/write operations for autonomous agent pair-programming. |
+| **[Fetch MCP](https://github.com/modelcontextprotocol/servers/tree/main/src/fetch)** | Reference Server | Node.js / Python | Fast HTTP resource retrieval and HTML-to-Markdown conversion without full browser overhead. |
+| **[Docker MCP](https://github.com/ckreiling/mcp-server-docker)** | Community Server | Docker Engine Socket | Real-time container state inspection, restart actions, and isolated log retrieval via MCP. |
+| **[SQLite MCP](https://github.com/modelcontextprotocol/servers/tree/main/src/sqlite)** | Reference Server | Local SQLite Engine | Zero-latency local database schema querying, SQL statement execution, and data validation. |
+| **[Git & GitHub MCP](https://github.com/modelcontextprotocol/servers/tree/main/src/github)** | Reference Server | Local Git / API | Automated branch management, commit auditing, repository exploration, and issue tracking. |
+| **[Hermes Agent Engine](https://github.com/NousResearch/Hermes-Function-Calling)** | Nous Research | Debian 12 LXC (`CT 115`) | Autonomous agent execution harness supporting multi-step tool calling and local shell execution. |
 
 ---
 
