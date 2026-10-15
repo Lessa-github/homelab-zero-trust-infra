@@ -34,6 +34,12 @@
     .sidebar-nav {
       padding: 10px 0 30px 15px !important;
     }
+    .sidebar hr {
+      border: none !important;
+      height: 1px !important;
+      background: #1e293b !important;
+      margin: 20px 25px 20px 10px !important;
+    }
     .sidebar-nav a {
       color: #94a3b8 !important;
       font-size: 0.95rem !important;
@@ -288,6 +294,9 @@
     window.$docsify = {
       name: '🏛️ Zero-Trust Homelab',
       repo: 'https://github.com/Lessa-github/homelab-zero-trust-infra',
+      requestHeaders: {
+        'cache-control': 'max-age=0, no-cache'
+      },
       loadSidebar: '_sidebar.md?t=' + Date.now(),
       loadNavbar: '_navbar.md?t=' + Date.now(),
       subMaxLevel: 2,
