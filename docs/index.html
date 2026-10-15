@@ -186,19 +186,94 @@
       font-size: 0.9rem !important;
     }
 
-    /* Mermaid Diagram Sizing & Centering: Crisp, Compact & Proportional */
+    /* Mermaid Diagram Sizing & Centering: Crisp, Responsive & Expandable */
     .mermaid {
+      position: relative !important;
       text-align: center !important;
-      margin: 2rem auto !important;
+      margin: 2.2rem auto !important;
       overflow-x: auto !important;
       display: flex !important;
       justify-content: center !important;
+      align-items: center !important;
+      cursor: zoom-in !important;
+      border-radius: 8px !important;
+      padding: 14px 10px !important;
+      background: rgba(13, 19, 34, 0.5) !important;
+      border: 1px solid rgba(30, 41, 59, 0.6) !important;
+      transition: all 0.2s ease !important;
+    }
+    .mermaid:hover {
+      background: rgba(15, 23, 42, 0.8) !important;
+      border-color: rgba(56, 189, 248, 0.4) !important;
     }
     .mermaid svg {
-      max-width: 780px !important;
+      max-width: 100% !important;
+      width: auto !important;
       height: auto !important;
       margin: 0 auto !important;
       display: block !important;
+    }
+    .mermaid-zoom-badge {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      background: rgba(15, 23, 42, 0.85);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(4px);
+      z-index: 10;
+      user-select: none;
+    }
+    .mermaid:hover .mermaid-zoom-badge {
+      opacity: 1;
+      background: #1e293b;
+      border-color: #38bdf8;
+    }
+    .mermaid.mermaid-fullscreen {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      background: rgba(5, 8, 16, 0.96) !important;
+      backdrop-filter: blur(14px) !important;
+      -webkit-backdrop-filter: blur(14px) !important;
+      z-index: 999999 !important;
+      margin: 0 !important;
+      padding: 50px 30px !important;
+      box-sizing: border-box !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      cursor: zoom-out !important;
+      overflow: auto !important;
+    }
+    .mermaid.mermaid-fullscreen svg {
+      max-width: 94vw !important;
+      max-height: 86vh !important;
+      width: auto !important;
+      height: auto !important;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8) !important;
+    }
+    .mermaid.mermaid-fullscreen .mermaid-zoom-badge {
+      position: fixed;
+      top: 20px;
+      right: 25px;
+      background: #ef4444;
+      color: #ffffff;
+      border: 1px solid #f87171;
+      font-size: 0.82rem;
+      padding: 6px 14px;
+      opacity: 1;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
     }
 
     /* Mermaid Global High-Contrast SVG Typography & Timeline Text Colors */
@@ -322,11 +397,57 @@
       plugins: [
         function(hook, vm) {
           hook.doneEach(function() {
-            mermaid.run();
+            function attachZoom() {
+              document.querySelectorAll('.mermaid').forEach(function(el) {
+                if (!el.querySelector('.mermaid-zoom-badge')) {
+                  var badge = document.createElement('span');
+                  badge.className = 'mermaid-zoom-badge';
+                  badge.innerHTML = '🔍 Click to expand ⛶';
+                  el.appendChild(badge);
+
+                  el.addEventListener('click', function(e) {
+                    if (el.classList.contains('mermaid-fullscreen')) {
+                      if (e.target === el || e.target.classList.contains('mermaid-zoom-badge') || !e.target.closest('svg')) {
+                        el.classList.remove('mermaid-fullscreen');
+                        badge.innerHTML = '🔍 Click to expand ⛶';
+                        document.body.style.overflow = '';
+                      }
+                    } else {
+                      el.classList.add('mermaid-fullscreen');
+                      badge.innerHTML = '✕ Close Fullscreen (Esc)';
+                      document.body.style.overflow = 'hidden';
+                    }
+                  });
+                }
+              });
+            }
+
+            try {
+              var p = mermaid.run();
+              if (p && typeof p.then === 'function') {
+                p.then(attachZoom);
+              } else {
+                setTimeout(attachZoom, 250);
+              }
+            } catch(e) {
+              setTimeout(attachZoom, 250);
+            }
           });
         }
       ]
-    }
+    };
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        var active = document.querySelector('.mermaid.mermaid-fullscreen');
+        if (active) {
+          active.classList.remove('mermaid-fullscreen');
+          var badge = active.querySelector('.mermaid-zoom-badge');
+          if (badge) badge.innerHTML = '🔍 Click to expand ⛶';
+          document.body.style.overflow = '';
+        }
+      }
+    });
   </script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
