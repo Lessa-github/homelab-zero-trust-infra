@@ -29,18 +29,24 @@
     .sidebar {
       background-color: #060911 !important;
       border-right: 1px solid #1e293b !important;
-      width: 280px !important;
+      width: 330px !important;
     }
     .sidebar-nav {
       padding: 10px 0 30px 15px !important;
     }
     .sidebar-nav a {
       color: #94a3b8 !important;
-      font-size: 0.96rem !important;
+      font-size: 0.95rem !important;
       transition: all 0.2s ease !important;
       border-left: 2px solid transparent !important;
       padding-left: 8px !important;
-      display: inline-block !important;
+      padding-right: 15px !important;
+      display: block !important;
+      white-space: normal !important;
+      word-break: break-word !important;
+      text-overflow: unset !important;
+      overflow: visible !important;
+      line-height: 1.4 !important;
     }
     .sidebar-nav a:hover {
       color: #38bdf8 !important;
@@ -60,8 +66,18 @@
     }
     /* Expanded Fluid Widescreen Layout */
     .content {
+      left: 330px !important;
       padding-top: 20px !important;
-      max-width: 100% !important;
+      max-width: calc(100% - 330px) !important;
+    }
+    @media screen and (max-width: 768px) {
+      .sidebar {
+        width: 300px !important;
+      }
+      .content {
+        left: 0 !important;
+        max-width: 100% !important;
+      }
     }
     .markdown-section {
       max-width: 95% !important;
