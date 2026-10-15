@@ -49,30 +49,35 @@ No infrastructure project succeeds by buying hardware blindly. The architecture 
 ## 📐 Zero-Trust Network Topology :id=network-topology
 
 ```mermaid
-graph LR
-    subgraph INGRESS ["1. Zero-Trust Ingress"]
-        direction TB
-        Admin["Administrator Device<br>(Peer: 10.240.50.2)"]
-        Mesh["NetBird Mesh Overlay<br>(ChaCha20-Poly1305)"]
-        Admin <-->|P2P Handshake| Mesh
+flowchart TD
+    subgraph ACCESS ["1. Zero-Trust Ingress (NetBird Mesh)"]
+        Admin["Admin Client (10.240.50.2)"] <-->|"ChaCha20-Poly1305 Handshake"| Overlay["Encrypted WireGuard Mesh"]
     end
 
-    subgraph PVE ["2. Proxmox VE 8 Hypervisor Host"]
-        Kernel["Linux Kernel 6.8 Routing<br>cgroups v2 Resource Governor"]
+    subgraph PVE ["2. Proxmox VE 8 Hypervisor Host (10.240.50.1)"]
+        HostKernel["Linux Kernel 6.8 Routing · cgroups v2 Governor"]
     end
 
-    Mesh -->|Zero Open WAN Ports| Kernel
+    Overlay -->|"Zero Open WAN Ports"| HostKernel
 
-    subgraph EGRESS ["3. Three Dedicated Architectural Branches"]
-        direction TB
-        VMBR0["vmbr0 (Production Core · 172.28.40.0/24)<br>NPM Reverse Proxy :443 · Authentik SSO · AdGuard DNS"]
-        VMBR1["vmbr1 (Air-Gapped Sandbox · 192.168.199.0/24)<br>Isolated L2 Switch · Velociraptor · INetSim (No Gateway)"]
-        WT0["wt0 (Management Overlay · 10.240.50.0/24)<br>Proxmox Web UI :8006 · Host SSH Bastion :22"]
+    subgraph BR0 ["Branch 1: vmbr0 Production Core (172.28.40.0/24)"]
+        direction LR
+        NPM["NPM Reverse Proxy (:443)"] --> AUTH["Authentik SSO"] & ADG["AdGuard DNS"] & KOM["Komodo GitOps"]
     end
 
-    Kernel -->|"vmbr0 Bridge"| VMBR0
-    Kernel -.->|"vmbr1 Isolated"| VMBR1
-    Kernel ==>|"wt0 Encrypted Mesh"| WT0
+    subgraph BR1 ["Branch 2: vmbr1 Air-Gapped Sandbox (192.168.199.0/24)"]
+        direction LR
+        Victim["Victim Target (VM 205)"] -->|"Trapped L2 Traffic"| INetSim["INetSim Fake Net (CT 202)"]
+    end
+
+    subgraph BR2 ["Branch 3: wt0 Management Overlay (10.240.50.0/24)"]
+        direction LR
+        PVEUI["Proxmox Web UI (:8006)"] --- SSH["Host SSH Bastion (:22)"]
+    end
+
+    HostKernel ==>|"vmbr0 Bridge"| BR0
+    HostKernel -.->|"vmbr1 Isolated (No WAN)"| BR1
+    HostKernel -->|"wt0 Encrypted Mesh"| BR2
 ```
 
 ### Documented Subnet Allocation
@@ -187,6 +192,34 @@ Options:
   -s, --sanitized          Force JSON output with fully sanitized network addresses
   -h, --help               Show this help message and exit
 ```
+
+---
+
+## 📦 Vetted Open-Source Upstream Stacks :id=vetted-repositories
+
+To maintain a zero-compromise security posture and adhere to our **Frugal SRE** principles, every piece of software running across the homelab undergoes a rigorous **AppSec Supply Chain Audit** prior to deployment in unprivileged LXC containers.
+
+Below is the verified upstream repository directory powering the infrastructure:
+
+| Project & Repository | Category & Target | License | Security Architecture & AppSec Audit Findings |
+| :--- | :--- | :--- | :--- |
+| **[NetBird](https://github.com/netbirdio/netbird)** | Mesh Network (`PVE Host`) | `BSD-3-Clause` | Encrypted WireGuard P2P overlay with Ed25519 peer identity; zero WAN exposure. |
+| **[OPNsense Core](https://github.com/opnsense/core)** | Perimeter Firewall (`PVE vmbr0/1`) | `BSD-2-Clause` | Virtualized FreeBSD stateful inspection; isolated air-gap routing; no default gateway on `vmbr1`. |
+| **[Nginx Proxy Manager](https://github.com/NginxProxyManager/nginx-proxy-manager)** | Reverse Proxy (`CT 103`) | `MIT` | Dynamic upstream HTTP/2 routing, automated DuckDNS wildcard SSL DNS-challenge certificates. |
+| **[AdGuard Home](https://github.com/AdguardTeam/AdGuardHome)** | DNS Firewall (`CT 112`) | `GPL-3.0` | 0.2ms cached DNS queries (`cache_optimistic: true`); encrypted DNS-over-HTTPS (DoH) upstreams. |
+| **[Authentik](https://github.com/goauthentik/authentik)** | Identity & SSO (`CT 111`) | `GPL-3.0` | Centralized Forward-Auth and OIDC identity gateway; hardware WebAuthn/Passkey enforcement. |
+| **[Komodo Orchestrator](https://github.com/mbecker20/komodo)** | GitOps Engine (`CT 109`) | `GPL-3.0` | Declarative Rust-based container orchestrator; Periphery build agent runs in <18 MB RAM. |
+| **[Vaultwarden](https://github.com/dani-garcia/vaultwarden)** | Secrets Vault (`CT 108`) | `AGPL-3.0` | Frugal Rust implementation of Bitwarden API with SQLite; zero Java/Node heap overhead. |
+| **[SimpleLogin](https://github.com/simple-login/app)** | Email Privacy (`CT 110`) | `MIT` | PGP-encrypted disposable email aliasing suite preventing homelab credential harvesting. |
+| **[Beszel](https://github.com/henrygd/beszel)** | Hardware Telemetry (`CT 116`) | `MIT` | Go-based lightweight resource telemetry hub; S.M.A.R.T. disk monitoring with zero JVM bloat. |
+| **[Dozzle](https://github.com/amir20/dozzle)** | Log Streaming (`CT 113`) | `MIT` | Real-time container log aggregator via non-blocking WebSockets; zero disk-indexing overhead. |
+| **[Uptime Kuma](https://github.com/louislam/uptime-kuma)** | Availability Monitor (`CT 107`) | `MIT` | SQLite-backed synthetic health monitoring; automated alert webhooks on service degradation. |
+| **[Velociraptor](https://github.com/Velocidex/velociraptor)** | Endpoint DFIR (`CT 123`) | `AGPL-3.0` | Compiled static Go binary running in 67 MB RAM; on-demand VQL memory queries vs 6 GB SIEMs. |
+| **[OpenCTI](https://github.com/OpenCTI-Platform/opencti)** | Threat Intelligence (`CT 120`) | `Apache-2.0` | Structured STIX 2.1 threat intelligence platform with isolated Redis and search indices. |
+| **[Atomic Red Team](https://github.com/redcanaryco/atomic-red-team)** | Purple Team (`Sandbox`) | `MIT` | 344 mapped MITRE ATT&CK atomic tests with automated post-execution telemetry cleanup. |
+| **[INetSim](https://github.com/inetsim/inetsim)** | Malware Analysis (`CT 202`) | `GPL-2.0` | Simulated DNS/HTTP/SMTP daemons for trapping rogue malware traffic in `vmbr1`. |
+| **[SearXNG](https://github.com/searxng/searxng)** | Private Search (`CT 114`) | `AGPL-3.0` | Zero-telemetry metasearch engine serving contextual JSON search API to autonomous AI agents. |
+| **[Ollama](https://github.com/ollama/ollama)** | Local LLM Engine (`CT 115`) | `MIT` | Lightweight local GGUF model runner supporting air-gapped sovereign inference fallback. |
 
 ---
 

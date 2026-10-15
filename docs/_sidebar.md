@@ -5,6 +5,7 @@
 * [🛡️ Security Hardening](#security-hardening)
 * [⚙️ SRE Telemetry & Tuning](#sre-telemetry)
 * [🛠️ labctl CLI Controller](#cli-controller)
+* [📦 Vetted Open-Source Stacks](#vetted-repositories)
 * [🔗 Connected Portals](#connected-portals)
 
 ---
