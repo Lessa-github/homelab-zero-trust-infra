@@ -1,4 +1,28 @@
-*.log
-.env
-*.tmp
+# Operating System Files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# Environment and Secrets (Zero-Knowledge)
+.env
+.env.*
+!.env.example
+secrets.env
+
+# Temporary and Log files
+*.log
+*.tmp
+*.bak
